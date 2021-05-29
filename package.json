@@ -1,0 +1,16 @@
+{
+  "name": "macro-meal-planner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "keywords": [],
+  "author": "Chris Matthews <chrismatthews@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^4.15.4"
+  }
+}
