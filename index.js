@@ -2,6 +2,7 @@ import mealsApi from './api/meals/index.js';
 
 const meals = mealsApi.getMeals();
 
+// TODO - user input
 const targets = {
     kcal: 1800,
     protein: 180,
@@ -9,7 +10,7 @@ const targets = {
     fat: 40
 };
 
-// split out meals (ideally this should happen at API layer)
+// TODO - move this filtering to API layer
 const breakfasts = meals.filter(meal => meal.type === "breakfast");
 const mains = meals.filter(meal => meal.type === "main");
 const snacks = meals.filter(meal => meal.type === "snack");
@@ -105,21 +106,19 @@ const calculateMealPlans = targetMacros => {
 
                                 if (isPlanValid(currentPlan, targetMacros)) {
                                     const totals = calculateTotals(currentPlan);
-
-                                    const mealNames = currentPlan.reduce((arr, i) => {
-                                        arr.push(i.name);
-                                        return arr;
-                                    }, []);
-
-                                    validMealPlans.push({ meals: mealNames, ...totals });
+                                    const finalMeals = Object.assign({}, currentPlan);
+git
+                                    validMealPlans.push({ meals: finalMeals, ...totals });
                                 }
 
                                 currentPlan.pop();
                             });
                         }
+
                         currentPlan.pop();
                     });
                 }
+
                 currentPlan.pop();
             })
         }
@@ -129,6 +128,5 @@ const calculateMealPlans = targetMacros => {
 };
 
 const mealPlans = calculateMealPlans(targets);
-console.log(mealPlans);
-// mealPlans.map(plan => console.log(plan));
-// console.log(`# of plans: ${mealPlans.length}`);
+console.log(JSON.stringify(mealPlans));
+console.log(`# of plans: ${mealPlans.length}`);
