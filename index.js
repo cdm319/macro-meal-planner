@@ -107,7 +107,7 @@ const calculateMealPlans = targetMacros => {
                                 if (isPlanValid(currentPlan, targetMacros)) {
                                     const totals = calculateTotals(currentPlan);
                                     const finalMeals = Object.assign({}, currentPlan);
-git
+
                                     validMealPlans.push({ meals: finalMeals, ...totals });
                                 }
 
