@@ -64,10 +64,10 @@ const isPlanValid = (plan, target) => {
     const fRatio = totals.fat / target.fat;
 
     return (
-        kcalRatio >= 0.95 && kcalRatio <= 1.01 &&
-        pRatio >= 0.99 && pRatio <= 1.01 &&       // we want to be strict on protein
-        cRatio >= 0.95 && cRatio <= 1.01 &&
-        fRatio >= 0.95 && fRatio <= 1.01
+        kcalRatio >= 0.90 && kcalRatio <= 1.05 &&
+        pRatio >= 0.99 && pRatio <= 1.05 &&       // we want to be strict on protein
+        cRatio >= 0.90 && cRatio <= 1.05 &&
+        fRatio >= 0.90 && fRatio <= 1.05
     );
 };
 
@@ -127,6 +127,8 @@ const calculateMealPlans = targetMacros => {
     return validMealPlans;
 };
 
+console.time('calculateMealPlans');
 const mealPlans = calculateMealPlans(targets);
-console.log(JSON.stringify(mealPlans));
-console.log(`# of plans: ${mealPlans.length}`);
+// console.log(JSON.stringify(mealPlans));
+console.log(`Number of results: ${mealPlans.length}`);
+console.timeEnd('calculateMealPlans');
