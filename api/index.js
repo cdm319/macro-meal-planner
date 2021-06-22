@@ -4,10 +4,10 @@ const meals = mealsApi.getMeals();
 
 // TODO - user input
 const targets = {
-    kcal: 1800,
-    protein: 180,
-    carbs: 180,
-    fat: 40
+    kcal: 1255,   // 1800, 1255
+    protein: 126, // 180,  126
+    carbs: 126,   // 180,  126
+    fat: 28       // 40,   28
 };
 
 // TODO - move this filtering to API layer
@@ -41,10 +41,10 @@ const isPlanBelowTarget = (plan, target) => {
     const totals = calculateTotals(plan);
 
     return (
-        totals.kcal <= target.kcal &&
-        totals.protein <= target.protein &&
-        totals.carbs <= target.carbs &&
-        totals.fat <= target.fat
+        totals.kcal <= target.kcal * 1.05 &&
+        totals.protein <= target.protein * 1.05 &&
+        totals.carbs <= target.carbs * 1.05 &&
+        totals.fat <= target.fat * 1.05
     );
 };
 
@@ -64,7 +64,7 @@ const isPlanValid = (plan, target) => {
     const fRatio = totals.fat / target.fat;
 
     return (
-        kcalRatio >= 0.90 && kcalRatio <= 1.05 &&
+        kcalRatio >= 0.99 && kcalRatio <= 1.02 &&
         pRatio >= 0.99 && pRatio <= 1.05 &&       // we want to be strict on protein
         cRatio >= 0.90 && cRatio <= 1.05 &&
         fRatio >= 0.90 && fRatio <= 1.05
@@ -104,11 +104,20 @@ const calculateMealPlans = targetMacros => {
                             snacks.map(snack => {
                                 currentPlan.push(snack);
 
-                                if (isPlanValid(currentPlan, targetMacros)) {
-                                    const totals = calculateTotals(currentPlan);
-                                    const finalMeals = Object.assign({}, currentPlan);
+                                if (isPlanBelowTarget(currentPlan, targetMacros)) {
+                                    const remainingSnacks = snacks.filter(item => item.name !== snack.name);
+                                    remainingSnacks.map(rSnack => {
+                                        currentPlan.push(rSnack);
 
-                                    validMealPlans.push({ meals: finalMeals, ...totals });
+                                        if (isPlanValid(currentPlan, targetMacros)) {
+                                            const totals = calculateTotals(currentPlan);
+                                            const mealNames = currentPlan.reduce((curr, i) => [...curr, i.name], []);
+
+                                            validMealPlans.push({ meals: mealNames, ...totals });
+                                        }
+
+                                        currentPlan.pop();
+                                    });
                                 }
 
                                 currentPlan.pop();
@@ -127,8 +136,5 @@ const calculateMealPlans = targetMacros => {
     return validMealPlans;
 };
 
-console.time('calculateMealPlans');
 const mealPlans = calculateMealPlans(targets);
-// console.log(JSON.stringify(mealPlans));
-console.log(`Number of results: ${mealPlans.length}`);
-console.timeEnd('calculateMealPlans');
+console.log(JSON.stringify(mealPlans));
