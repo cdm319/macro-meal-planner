@@ -2,15 +2,23 @@
   "name": "macro-meal-planner",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "node ./index.js"
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "next lint"
   },
   "keywords": [],
   "author": "Chris Matthews <chrismatthews@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "csv-parse": "^4.15.4"
+    "csv-parse": "^4.15.4",
+    "next": "^11.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0",
+    "eslint-config-next": "^11.0.1"
   }
 }
