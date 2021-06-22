@@ -1,10 +1,49 @@
 import fs from "fs";
 import parse from "csv-parse/lib/sync";
+import { useState } from 'react';
 
 const HomePage = ({ data, error }) => {
+    const [mealPlans, setMealPlans] = useState({});
+
+    const generateMealPlan = async event => {
+        event.preventDefault();
+
+        const res = await fetch('/api/meal-plan', {
+            body: JSON.stringify({
+                kcal: event.target.kcal.value,
+                protein: event.target.protein.value,
+                carbs: event.target.carbs.value,
+                fat: event.target.fat.value
+            }),
+            headers: {'Content-Type': 'application/json'},
+            method: 'POST'
+        });
+
+        const result = await res.json();
+        setMealPlans(result);
+    };
+
     return (
         <>
-            <h1>Meals</h1>
+            <h1>Generate Meal Plan</h1>
+            <p></p>
+            <form onSubmit={generateMealPlan}>
+                <input type="text" id="kcal" name="kcal" placeholder="kcal" />
+                <input type="text" id="protein" name="protein" placeholder="protein (g)" />
+                <input type="text" id="carbs" name="carbs" placeholder="carbs (g)" />
+                <input type="text" id="fat" name="fat" placeholder="fat (g)" />
+
+                <button type="submit">Generate</button>
+            </form>
+            { mealPlans && Object.keys(mealPlans).length > 0 &&
+                <ul>
+                    { mealPlans.map((mealPlan) => (
+                    <li>{mealPlan.meals.join(' | ')}</li>
+                    ))}
+                </ul>
+            }
+
+            <h1>List of all meals</h1>
             { error && <div>An error occurred!</div>}
             { !error && data && (
                 <table>
