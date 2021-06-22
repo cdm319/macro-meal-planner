@@ -36,11 +36,22 @@ const HomePage = ({ data, error }) => {
                 <button type="submit">Generate</button>
             </form>
             { mealPlans && Object.keys(mealPlans).length > 0 &&
-                <ul>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Breakfast</th>
+                            <th>Lunch</th>
+                            <th>Dinner</th>
+                            <th>Snack 1</th>
+                            <th>Snack 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     { mealPlans.map((mealPlan) => (
-                    <li>{mealPlan.meals.join(' | ')}</li>
+                        <tr>{mealPlan.meals.map(meal => <td>{meal}</td>)}</tr>
                     ))}
-                </ul>
+                    </tbody>
+                </table>
             }
 
             <h1>List of all meals</h1>
