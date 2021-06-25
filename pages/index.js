@@ -1,6 +1,7 @@
 import fs from "fs";
 import parse from "csv-parse/lib/sync";
 import { useState } from 'react';
+import MealPlanTable from '../components/MealPlanTable';
 
 const HomePage = ({ data, error }) => {
     const [mealPlans, setMealPlans] = useState({});
@@ -35,24 +36,7 @@ const HomePage = ({ data, error }) => {
 
                 <button type="submit">Generate</button>
             </form>
-            { mealPlans && Object.keys(mealPlans).length > 0 &&
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Breakfast</th>
-                            <th>Lunch</th>
-                            <th>Dinner</th>
-                            <th>Snack 1</th>
-                            <th>Snack 2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    { mealPlans.map((mealPlan) => (
-                        <tr>{mealPlan.meals.map(meal => <td>{meal}</td>)}</tr>
-                    ))}
-                    </tbody>
-                </table>
-            }
+            { mealPlans && Object.keys(mealPlans).length > 0 && <MealPlanTable mealPlans={mealPlans} /> }
 
             <h1>List of all meals</h1>
             { error && <div>An error occurred!</div>}
