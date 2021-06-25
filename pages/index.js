@@ -25,7 +25,7 @@ const HomePage = ({ recipes, error }) => {
     };
 
     return (
-        <div className="md:container md:mx-auto bg-blueGray-100 text-center">
+        <div className="md:container md:mx-auto text-center">
             <h1 className="text-4xl font-semibold leading-normal text-gray-800 my-12">Macro Meal Planner</h1>
 
             <div className="pb-4 max-w-md mx-auto">

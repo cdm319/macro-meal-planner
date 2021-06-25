@@ -1,7 +1,7 @@
 const MealPlanTable = ({ mealPlans }) => (
     <>
         <h2 className="text-xl font-medium leading-normal my-4 text-gray-800">Valid Meal Plans</h2>
-        <table className="items-center w-full bg-transparent border-collapse">
+        <table className="items-center w-full bg-transparent border-collapse border border-solid border-gray-100">
             <thead>
             <tr>
                 <th className="px-2 bg-gray-50 text-gray-500 align-middle border border-solid border-gray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">Breakfast</th>
