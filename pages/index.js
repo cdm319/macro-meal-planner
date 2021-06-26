@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import MealPlanTable from '../components/MealPlanTable';
+import TextField from '../components/TextField';
 
 const HomePage = () => {
     const [mealPlans, setMealPlans] = useState({});
@@ -27,29 +28,21 @@ const HomePage = () => {
             <div className="pb-4 max-w-md mx-auto">
                 <h2 className="text-xl font-medium leading-normal my-4 text-gray-800">Generate Meal Plan</h2>
                 <form className="grid grid-cols-1 gap-6" onSubmit={generateMealPlan}>
-                    <label className="block text-left">
-                        <span className="text-gray-700">Calories (kcal)</span>
-                        <input type="text" id="kcal" name="kcal" placeholder="kcal" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-                    </label>
-                    <label className="block text-left">
-                        <span className="text-gray-700">Protein (g)</span>
-                        <input type="text" id="protein" name="protein" placeholder="protein (g)" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-                    </label>
-                    <label className="block text-left">
-                        <span className="text-gray-700">Carbs (g)</span>
-                        <input type="text" id="carbs" name="carbs" placeholder="carbs (g)" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-                    </label>
-                    <label className="block text-left">
-                        <span className="text-gray-700">Fat (g)</span>
-                        <input type="text" id="fat" name="fat" placeholder="fat (g)" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm" />
-                    </label>
+                    <TextField id="kcal" label="Calories (kcal)" />
+                    <TextField id="protein" label="Protein (g)" />
+                    <TextField id="carbs" label="Carbs (g)" />
+                    <TextField id="fat" label="Fat (g)" />
 
                     <input type="submit" value="Generate" className="mt-2 block w-full rounded-md bg-blue-600 hover:bg-blue-700 text-white tracking-wide font-semibold py-2 p-4 cursor-pointer shadow-md"></input>
                 </form>
             </div>
 
             <div>
-                { mealPlans && Object.keys(mealPlans).length > 0 && <MealPlanTable mealPlans={mealPlans} /> }
+                {
+                    mealPlans &&
+                    Object.keys(mealPlans).length > 0 &&
+                    <MealPlanTable mealPlans={mealPlans} />
+                }
             </div>
         </>
     );
