@@ -1,7 +1,6 @@
 import fs from "fs";
 import parse from "csv-parse/lib/sync";
-
-const stubData = [{"meals": ["Croissant", "Slow Cooker Jamaican Chicken Curry", "Smoky Pork & Boston Beans", "Fat Free Greek Yoghurt, Honey & Fruit", "BBQ Chicken Wrap"], "kcal": 1791, "protein": 180, "carbs": 182, "fat": 40}, {"meals": ["Croissant", "FMC Orange Chicken", "Turkey Meatballs & Pasta", "Chocolate Protein Shake (Milk)", "Vanilla Protein Shake (Milk)"], "kcal": 1794, "protein": 181, "carbs": 180, "fat": 36}];
+import { createHash } from "crypto";
 
 const fileContent = fs.readFileSync(process.cwd() + '/_data/meals.csv');
 const meals = parse(fileContent, {columns: true});
@@ -10,6 +9,11 @@ const meals = parse(fileContent, {columns: true});
 const breakfasts = meals.filter(meal => meal.type === "breakfast");
 const mains = meals.filter(meal => meal.type === "main");
 const snacks = meals.filter(meal => meal.type === "snack");
+
+const generateHash = mealNames => {
+    const str = mealNames.sort().join();
+    return createHash('sha1').update(str).digest('base64');
+};
 
 /**
  * Calculates the total kcal and macros for the given plan
@@ -79,6 +83,7 @@ const isPlanValid = (plan, target) => {
  */
 const calculateMealPlans = targetMacros => {
     let validMealPlans = [];
+    const mealHashSet = new Set();
 
     // TODO - break the complexity here, there's an insane amount of iteration
     breakfasts.map(breakfast => {
@@ -108,8 +113,12 @@ const calculateMealPlans = targetMacros => {
                                         if (isPlanValid(currentPlan, targetMacros)) {
                                             const totals = calculateTotals(currentPlan);
                                             const mealNames = currentPlan.reduce((curr, i) => [...curr, i.name], []);
+                                            const hash = generateHash([...mealNames]);
 
-                                            validMealPlans.push({ meals: mealNames, ...totals });
+                                            if (!mealHashSet.has(hash)) {
+                                                mealHashSet.add(hash);
+                                                validMealPlans.push({meals: mealNames, ...totals});
+                                            }
                                         }
 
                                         currentPlan.pop();
@@ -133,14 +142,12 @@ const calculateMealPlans = targetMacros => {
 };
 
 const handler = (req, res) => {
-    console.log(req.body);
     const { kcal, protein, carbs, fat } = req.body;
     const targetKcal = parseInt(req.body.kcal) || 0;
     const targetP = parseInt(req.body.protein) || 0;
     const targetC = parseInt(req.body.carbs) || 0;
     const targetF = parseInt(req.body.fat) || 0;
     const targets = { kcal: targetKcal, protein: targetP, carbs: targetC, fat: targetF };
-    console.log(targets);
 
     const mealPlans = calculateMealPlans(targets);
 
