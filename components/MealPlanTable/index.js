@@ -13,10 +13,10 @@ const MealPlanTable = ({ mealPlans }) => (
             </tr>
             </thead>
             <tbody>
-            {mealPlans.map(mealPlan => (
-                <tr className="group">
-                    {mealPlan.meals.map(meal =>
-                        <td className="group-hover:bg-gray-100 border-t-0 px-2 align-middle border-l-0 border-r-0 text-xs whitespace-normal p-4 text-left">{meal}</td>
+            {mealPlans.map((mealPlan, i) => (
+                <tr key={i} className="group">
+                    {mealPlan.meals.map((meal, j) =>
+                        <td key={j} className="group-hover:bg-gray-100 border-t-0 px-2 align-middle border-l-0 border-r-0 text-xs whitespace-normal p-4 text-left">{meal}</td>
                     )}
                 </tr>
             ))}
