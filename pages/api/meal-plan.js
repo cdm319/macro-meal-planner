@@ -1,14 +1,5 @@
-import fs from "fs";
-import parse from "csv-parse/lib/sync";
 import { createHash } from "crypto";
-
-const fileContent = fs.readFileSync(process.cwd() + '/_data/meals.csv');
-const meals = parse(fileContent, {columns: true});
-
-// TODO - move this filtering to API layer
-const breakfasts = meals.filter(meal => meal.type === "breakfast");
-const mains = meals.filter(meal => meal.type === "main");
-const snacks = meals.filter(meal => meal.type === "snack");
+import mealsApi from '../../lib/db/meals';
 
 const generateHash = mealNames => {
     const str = mealNames.sort().join();
@@ -81,7 +72,14 @@ const isPlanValid = (plan, target) => {
  * @param fat - max grams of fat
  * @returns an array of valid meal plan objects
  */
-const calculateMealPlans = targetMacros => {
+const calculateMealPlans = async targetMacros => {
+    const meals = await mealsApi.getMeals();
+
+    // TODO - move this filtering to API layer
+    const breakfasts = meals.filter(meal => meal.type === "breakfast");
+    const mains = meals.filter(meal => meal.type === "main");
+    const snacks = meals.filter(meal => meal.type === "snack");
+
     let validMealPlans = [];
     const mealHashSet = new Set();
 
@@ -141,7 +139,7 @@ const calculateMealPlans = targetMacros => {
     return validMealPlans;
 };
 
-const handler = (req, res) => {
+const handler = async (req, res) => {
     const { kcal, protein, carbs, fat } = req.body;
     const targetKcal = parseInt(req.body.kcal) || 0;
     const targetP = parseInt(req.body.protein) || 0;
@@ -149,7 +147,7 @@ const handler = (req, res) => {
     const targetF = parseInt(req.body.fat) || 0;
     const targets = { kcal: targetKcal, protein: targetP, carbs: targetC, fat: targetF };
 
-    const mealPlans = calculateMealPlans(targets);
+    const mealPlans = await calculateMealPlans(targets);
 
     res.status(200).json(mealPlans);
 }

@@ -1,5 +1,4 @@
-import fs from "fs";
-import parse from "csv-parse/lib/sync";
+import mealsApi from "../lib/db/meals";
 import MealTypePill from "../components/MealTypePill";
 
 const MealsPage = ({ recipes, error }) => {
@@ -42,8 +41,7 @@ const MealsPage = ({ recipes, error }) => {
 };
 
 export const getServerSideProps = async () => {
-    const fileContent = fs.readFileSync(process.cwd() + '/_data/meals.csv');
-    const recipes = parse(fileContent, {columns: true});
+    const recipes = await mealsApi.getMeals();
 
     return { props: { recipes } };
 }
