@@ -101,9 +101,12 @@ const MealsPage = ({ recipes, error }) => {
 };
 
 export const getServerSideProps = async () => {
-    const recipes = await mealsApi.getMeals();
-
-    return { props: { recipes } };
+    try {
+        const recipes = await mealsApi.getMeals();
+        return { props: { recipes, error: null } };
+    } catch (e) {
+        return { props: { recipes: null, error: e } };
+    }
 }
 
 export default MealsPage;
