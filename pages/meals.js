@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { useRouter } from 'next/router';
+
 import mealsApi from "../lib/db/meals";
 import MealTypePill from "../components/MealTypePill";
 import TextField from "../components/TextField";
 import Dropdown from "../components/Dropdown";
+import FormMessage from "../components/FormMessage";
 
 const MealsPage = ({ recipes, error }) => {
+    const [formMessage, setFormMessage] = useState('');
     const router = useRouter();
 
     const refreshData = () => {
@@ -13,6 +17,8 @@ const MealsPage = ({ recipes, error }) => {
 
     const addMeal = async event => {
         event.preventDefault();
+
+        setFormMessage('');
 
         const res = await fetch('/api/meals', {
             body: JSON.stringify({
@@ -27,13 +33,15 @@ const MealsPage = ({ recipes, error }) => {
             method: 'POST'
         });
 
-        if (res.status == 200) {
-            alert("Meal added!");
+        if (res.status === 200) {
+            setFormMessage('success');
             event.target.reset();
             refreshData();
         } else {
-            alert("An error occurred.")
+            setFormMessage('error');
         }
+
+        setTimeout(() => setFormMessage(''), 5000);
     };
 
     return (
@@ -41,6 +49,10 @@ const MealsPage = ({ recipes, error }) => {
             <div className="pb-4 max-w-md mx-auto">
                 <h2 className="text-xl font-medium leading-normal my-4 text-gray-800">Add new meal</h2>
                 <form className="grid grid-cols-1 gap-6" onSubmit={addMeal}>
+
+                    {formMessage && formMessage === 'success' && <FormMessage type="success" message="Meal added!" /> }
+                    {formMessage && formMessage === 'error' && <FormMessage type="error" message="An error occurred." /> }
+
                     <TextField id="name" label="Name" />
                     <Dropdown id="type" label="Type" options={['breakfast', 'main', 'snack']} />
                     <TextField id="kcal" label="Calories (kcal)" />
@@ -48,7 +60,7 @@ const MealsPage = ({ recipes, error }) => {
                     <TextField id="carbs" label="Carbs (g)" />
                     <TextField id="fat" label="Fat (g)" />
 
-                    <input type="submit" value="Save" className="mt-2 block w-full rounded-md bg-blue-600 hover:bg-blue-700 text-white tracking-wide font-semibold py-2 p-4 cursor-pointer shadow-md"></input>
+                    <input type="submit" value="Save" className="mt-2 block w-full rounded-md bg-blue-600 hover:bg-blue-700 text-white tracking-wide font-semibold py-2 p-4 cursor-pointer shadow-md" />
                 </form>
             </div>
 
