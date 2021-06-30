@@ -106,10 +106,7 @@ export const getServerSideProps = async (context) => {
     const session = await getSession(context);
 
     if (!session) {
-        res.writeHead(302, {
-            Location: '/'
-        });
-        return res.end();
+        return { redirect: { permanent: false, destination: '/' } };
     }
 
     try {
