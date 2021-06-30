@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/client';
 
 import mealsApi from "../lib/db/meals";
 import MealTypePill from "../components/MealTypePill";
@@ -100,12 +101,22 @@ const MealsPage = ({ recipes, error }) => {
     );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+    const { res } = context;
+    const session = await getSession(context);
+
+    if (!session) {
+        res.writeHead(302, {
+            Location: '/'
+        });
+        return res.end();
+    }
+
     try {
         const recipes = await mealsApi.getMeals();
-        return { props: { recipes, error: null } };
+        return { props: { recipes, error: null, session } };
     } catch (e) {
-        return { props: { recipes: null, error: e } };
+        return { props: { recipes: null, error: e, session } };
     }
 }
 

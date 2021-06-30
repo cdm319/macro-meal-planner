@@ -7,6 +7,7 @@ const Layout = ({ children }) => (
 
             <div className="inline-block float-right h-12 table">
                 <Link href="/"><a className="text-gray-100 no-underline text-sm px-4 table-cell align-middle">Home</a></Link>
+                <Link href="/meal-plan"><a className="text-gray-100 no-underline text-sm px-4 table-cell align-middle">Meal Plan</a></Link>
                 <Link href="/meals"><a className="text-gray-100 no-underline text-sm px-4 table-cell align-middle">All Meals</a></Link>
             </div>
 
