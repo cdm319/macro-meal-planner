@@ -20,7 +20,7 @@ export default (req, res) => NextAuth(req, res, {
     ],
     callbacks: {
         async session(session, token) {
-            session.user = { ...session.user, ...token.profile }
+            session.user = { ...token, ...session.user };
             return session;
         }
     },

@@ -1,4 +1,5 @@
 import { createHash } from "crypto";
+import { getSession } from 'next-auth/client';
 import mealsApi from '../../lib/db/meals';
 
 const generateHash = mealNames => {
@@ -72,8 +73,8 @@ const isPlanValid = (plan, target) => {
  * @param fat - max grams of fat
  * @returns an array of valid meal plan objects
  */
-const calculateMealPlans = async targetMacros => {
-    const meals = await mealsApi.getMeals();
+const calculateMealPlans = async (targetMacros, userId) => {
+    const meals = await mealsApi.getMeals(userId);
 
     // TODO - move this filtering to API layer
     const breakfasts = meals.filter(meal => meal.type === "breakfast");
@@ -140,16 +141,22 @@ const calculateMealPlans = async targetMacros => {
 };
 
 const handler = async (req, res) => {
-    const { kcal, protein, carbs, fat } = req.body;
-    const targetKcal = parseInt(req.body.kcal) || 0;
-    const targetP = parseInt(req.body.protein) || 0;
-    const targetC = parseInt(req.body.carbs) || 0;
-    const targetF = parseInt(req.body.fat) || 0;
-    const targets = { kcal: targetKcal, protein: targetP, carbs: targetC, fat: targetF };
+    const session = await getSession({ req });
 
-    const mealPlans = await calculateMealPlans(targets);
+    if (session) {
+        const { kcal, protein, carbs, fat } = req.body;
+        const targetKcal = parseInt(req.body.kcal) || 0;
+        const targetP = parseInt(req.body.protein) || 0;
+        const targetC = parseInt(req.body.carbs) || 0;
+        const targetF = parseInt(req.body.fat) || 0;
+        const targets = { kcal: targetKcal, protein: targetP, carbs: targetC, fat: targetF };
 
-    res.status(200).json(mealPlans);
+        const userId = session.user.sub;
+
+        const mealPlans = await calculateMealPlans(targets, userId);
+
+        res.status(200).json(mealPlans);
+    }
 }
 
 export default handler;

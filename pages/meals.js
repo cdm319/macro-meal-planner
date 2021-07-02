@@ -105,12 +105,12 @@ export const getServerSideProps = async (context) => {
     const { res } = context;
     const session = await getSession(context);
 
-    if (!session) {
+    if (!session || !session.user.sub) {
         return { redirect: { permanent: false, destination: '/' } };
     }
 
     try {
-        const recipes = await mealsApi.getMeals();
+        const recipes = await mealsApi.getMeals(session.user.sub);
         return { props: { recipes, error: null, session } };
     } catch (e) {
         return { props: { recipes: null, error: e, session } };
